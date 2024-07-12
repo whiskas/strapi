@@ -22,7 +22,7 @@ const systemPrompt = `
               - info: An object containing every info properties
               - options: Includes settings like draftAndPublish
               - pluginOptions: For features like internationalization
-              - attributes: Defines the fields and their properties
+              - attributes: Defines the fields and their properties, fields name must use camelCase or PascalCase.
             </schema_structure>
 
             <schema_kind>
@@ -34,8 +34,8 @@ const systemPrompt = `
               You MUST provide all the following properties:
               - name: Same as pluralName
               - displayName: Default name to use in the admin panel
-              - singularName: Singular form of the content-type name. Used to generate the API routes and databases/tables collection. Must be kebab-case.
-              - pluralName: Plural form of the content-type name. Used to generate the API routes and databases/tables collection. Must be kebab-case.
+              - singularName: Singular form of the content-type name. Used to generate the API routes and databases/tables collection. Must be kebab-case. Has a different value than "pluralName".
+              - pluralName: Plural form of the content-type name. Used to generate the API routes and databases/tables collection. Must be kebab-case. Has a different value than "singularName".
               - description: Description of the model, it should describe the general purpose of the content-type, why it's used for, what it represents.
             </info_properties>
 
@@ -156,23 +156,27 @@ const applyDefaultValues = (schema: any) => {
   // Transform info properties to be kebab-case always
   schema.info.singularName = schema.info.singularName.toLowerCase().replace(/\s+/g, '-');
   schema.info.pluralName = schema.info.pluralName.toLowerCase().replace(/\s+/g, '-');
-  if (!schema.info.name) schema.info.name = schema.info.pluralName;
 
-  // Apply default values to attributes
+  // info.name is often forgotten
+  if (!schema.info.name) {
+    schema.info.name = schema.info.pluralName;
+  }
+
+  // Apply default values to special attributes
   Object.entries(schema.attributes).forEach(([name, attribute]: any) => {
     switch (attribute.type) {
-      case 'integer':
-        break;
-      case 'email':
-        break;
-      case 'boolean':
-        break;
       case 'enumeration':
         schema.attributes[name].enum = ['a', 'b'];
         break;
       case 'relation':
         schema.attributes[name].relation = 'oneToOne';
         schema.attributes[name].target = 'api::tag.tag';
+        break;
+      case 'component':
+        schema.attributes[name].component = 'basic.simple';
+        break;
+      case 'dynamiczone':
+        schema.attributes[name].components = ['basic.simple'];
         break;
       case 'media':
         schema.attributes[name].allowedTypes = ['images'];
@@ -187,13 +191,10 @@ const applyDefaultValues = (schema: any) => {
 };
 
 export const create = async (prompt: string, previousSchema?: object) => {
-  console.log({ previousSchema });
-
   const { object } = await generateObject({
     model: anthropic('claude-3-sonnet-20240229', {}),
     maxRetries: 10,
     schema: z.object({
-      // collectionType or singleType
       kind: z.enum(['collectionType', 'singleType']),
       collectionName: z.string(),
       info: z.object({
@@ -206,11 +207,6 @@ export const create = async (prompt: string, previousSchema?: object) => {
       options: z.object({
         draftAndPublish: z.boolean(),
       }),
-      // pluginOptions: z.object({
-      //   i18n: z.object({
-      //     localized: z.boolean(),
-      //   }),
-      // }),
       attributes: z.record(
         z.string(),
         z.object({
@@ -235,6 +231,7 @@ export const create = async (prompt: string, previousSchema?: object) => {
             'media',
             'relation',
             'blocks',
+            'component',
           ]),
         })
       ),

@@ -1,7 +1,8 @@
+import { ArrowClockwise, Sparkle } from '@strapi/icons';
 import * as React from 'react';
-import { useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 
-import { Form, useFetchClient, type FormProps } from '@strapi/admin/strapi-admin';
+import { Form, useFetchClient, useNotification } from '@strapi/admin/strapi-admin';
 import {
   Box,
   Button,
@@ -17,38 +18,48 @@ import {
   Typography,
 } from '@strapi/design-system';
 import { useNavigate } from 'react-router-dom';
-import { styled } from 'styled-components';
+import { keyframes, styled } from 'styled-components';
 
 import { useDataManager } from '../hooks/useDataManager';
 import { useFormModalNavigation } from '../hooks/useFormModalNavigation';
 import { pluginId } from '../pluginId';
 
 import { AttributeIcon } from './AttributeIcon';
+import { DisplayedType } from './DisplayedType';
 import { toAttributesArray } from './DataManagerProvider/utils/formatSchemas';
 
-import type { Struct } from '@strapi/types';
-import { DisplayedType } from './DisplayedType';
+import type { Struct, UID } from '@strapi/types';
 
 export interface AIArchitectModalProps {}
 
-interface FormValues {
-  prompt: string;
-}
-
-type OnSubmitCallback = NonNullable<FormProps<FormValues>['onSubmit']>;
-
 export const AIArchitectModal: React.FC<AIArchitectModalProps> = () => {
+  // Utils
   const navigate = useNavigate();
   const { post } = useFetchClient();
+  const { toggleNotification } = useNotification();
 
+  // State Providers
   const { isAIModalOpen, onOpenModalAIArchitect, onCloseModalAIArchitect } =
     useFormModalNavigation();
   const { createSchema, toggleAI } = useDataManager();
 
-  const [prompt, setPrompt] = useState<string>('create a random collection type');
+  // Local State
+  const [prompt, setPrompt] = useState<string>('');
   const [schema, setSchema] = useState<any>(undefined);
   const [loading, setLoading] = useState<boolean>(false);
+  const inputRef = useRef<HTMLInputElement>(null);
 
+  useEffect(() => {
+    if (!loading) {
+      inputRef.current?.focus();
+    }
+  }, [loading, inputRef]);
+
+  /**
+   * Callback function for modal visibility change.
+   *
+   * @param open - Indicates whether the modal is open or closed.
+   */
   const onModalChangeVisibility = (open: boolean) => {
     if (open) {
       onOpenModalAIArchitect();
@@ -57,10 +68,33 @@ export const AIArchitectModal: React.FC<AIArchitectModalProps> = () => {
     }
   };
 
+  /**
+   * A function that generates a schema based on the given prompt and schema.
+   *
+   * It sets the loading state to true, then makes a POST request to the server with the provided prompt and schema.
+   *
+   * If a valid schema is returned from the server, it sets the schema state to the received data.
+   *
+   * If an error occurs during the POST request, it logs the error to the console and triggers a notification.
+   *
+   * Finally, it sets the loading state to false.
+   */
   const onGenerate = async () => {
     setLoading(true);
-    const { data } = await post(`/${pluginId}/architect`, { prompt, schema });
-    setSchema(data);
+
+    try {
+      const { data } = await post<Struct.ContentTypeSchema>(`/${pluginId}/architect`, {
+        prompt,
+        schema,
+      });
+
+      // If a valid schema is returned
+      setSchema(data);
+      setPrompt('');
+    } catch {
+      toggleNotificationFailedToGenerateSchema();
+    }
+
     setLoading(false);
   };
 
@@ -68,42 +102,65 @@ export const AIArchitectModal: React.FC<AIArchitectModalProps> = () => {
     if (!schema) {
       return;
     }
+
     toggleAI();
-    const format = (x: any) => {
-      return {
-        kind: x.kind,
-        draftAndPublish: x.options?.draftAndPublish,
-        pluginOptions: x.pluginOptions,
-        ...x.info,
-        attributes: toAttributesArray(x.attributes),
-      };
-    };
 
-    createSchema(format(schema), 'contentType', 'api::some.some');
+    const formattedSchema = formatSchema(schema);
+    const { singularName } = formattedSchema;
 
-    navigate({ pathname: '/plugins/content-type-builder/content-types/api::some.some' });
+    const uid = `api::${singularName}.${singularName}` satisfies UID.Schema;
+
+    createSchema(formattedSchema, 'contentType', uid);
+
+    navigate({ pathname: `/plugins/content-type-builder/content-types/${uid}` });
 
     onCloseModalAIArchitect();
+  };
+
+  const formatSchema = (x: Struct.ContentTypeSchema) => ({
+    kind: x.kind,
+    draftAndPublish: x.options?.draftAndPublish,
+    pluginOptions: x.pluginOptions,
+    ...x.info,
+    attributes: toAttributesArray(x.attributes),
+  });
+
+  const toggleNotificationFailedToGenerateSchema = () => {
+    toggleNotification({
+      type: 'danger',
+      message: 'Failed to generate a valid schema, please try again or change your prompt',
+    });
   };
 
   return (
     <Modal.Root open={isAIModalOpen} onOpenChange={onModalChangeVisibility}>
       <Modal.Content>
         <Modal.Header>
-          <Modal.Title>AI Architect</Modal.Title>
+          <Modal.Title>✨ AI Architect</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form method="POST" onSubmit={onGenerate}>
-            <Flex width="100%" gap="20px">
+            <Flex width="100%" gap="20px" alignItems="baseline">
               <Field.Root
                 name="prompt"
-                hint="Example: Create a user with auth capabilities and an about me section"
+                hint={
+                  schema === undefined
+                    ? 'Example: Create a user with auth capabilities and an about me section'
+                    : 'Example: Add a manager field'
+                }
                 width="100%"
               >
                 <TextInput
+                  ref={inputRef}
+                  autoFocus
                   type="text"
-                  placeholder="What do you want to create?"
                   name="prompt"
+                  placeholder={
+                    schema === undefined
+                      ? 'What do you want to create today?'
+                      : "Is there anything you'd like to modify?"
+                  }
+                  disabled={loading}
                   value={prompt}
                   onChange={(e) => {
                     e.preventDefault();
@@ -112,13 +169,16 @@ export const AIArchitectModal: React.FC<AIArchitectModalProps> = () => {
                 />
                 <Field.Hint />
               </Field.Root>
-              <Button type="submit" disabled={!prompt || loading}>
-                Generate
+              <Button
+                type="submit"
+                disabled={!prompt || loading}
+                startIcon={loading ? <Loader /> : <Sparkle width="3rem" />}
+              >
+                {schema === undefined ? 'Generate' : 'Update'}
               </Button>
             </Flex>
           </Form>
           {schema !== undefined && <SchemaPreview schema={schema} />}
-          {/** This is where we will add the response component dynamically */}
         </Modal.Body>
         <Modal.Footer>
           <Button onClick={onCloseModalAIArchitect} variant="danger-light">
@@ -141,16 +201,35 @@ const BoxWrapper = styled(Box)`
   position: relative;
 `;
 
+const rotation = keyframes`
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(359deg);
+    }
+  `;
+
+const LoaderReload = styled(ArrowClockwise)`
+  animation: ${rotation} 1s infinite linear;
+`;
+
+const Loader: React.FC = () => <LoaderReload width="3rem" />;
+
 const SchemaPreview: React.FC<SchemaPreviewProps> = ({ schema }) => {
   const { info, attributes } = schema;
 
   const attributeCount = Object.keys(attributes).length;
 
   return (
-    <Box marginTop="25px">
+    <Flex marginTop="25px" direction="column" alignItems="left" gap={3}>
       <Box width="100%">
-        <Typography variant="beta">{info.displayName}</Typography>
-        <Typography variant="sigma">{info.description}</Typography>
+        <Box>
+          <Typography variant="beta">{info.displayName}</Typography>
+        </Box>
+        <Box>
+          <Typography variant="sigma">{info.description}</Typography>
+        </Box>
       </Box>
       <Table colCount={2} rowCount={attributeCount} width="100%">
         <Thead>
@@ -173,7 +252,7 @@ const SchemaPreview: React.FC<SchemaPreviewProps> = ({ schema }) => {
             return (
               <BoxWrapper tag="tr" key={name}>
                 <td>
-                  <Flex paddingLeft={2} gap={4}>
+                  <Flex paddingLeft={2} gap={3}>
                     <AttributeIcon type={attribute.type} />
                     <Typography fontWeight="bold">{name}</Typography>
                   </Flex>
@@ -186,6 +265,6 @@ const SchemaPreview: React.FC<SchemaPreviewProps> = ({ schema }) => {
           })}
         </Tbody>
       </Table>
-    </Box>
+    </Flex>
   );
 };

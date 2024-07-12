@@ -2,6 +2,7 @@ import { Fragment } from 'react';
 
 import {
   Box,
+  Flex,
   Button,
   TextButton,
   SubNav,
@@ -11,13 +12,13 @@ import {
   SubNavSection,
   SubNavSections,
 } from '@strapi/design-system';
-import { Plus } from '@strapi/icons';
+import { Plus, Sparkle } from '@strapi/icons';
 import upperFirst from 'lodash/upperFirst';
 import { useIntl } from 'react-intl';
 import { NavLink } from 'react-router-dom';
 
 import { useFormModalNavigation } from '../../hooks/useFormModalNavigation';
-import { getTrad } from '../../utils/getTrad';
+import { getTrad } from '../../utils';
 
 import { useContentTypeBuilderMenu } from './useContentTypeBuilderMenu';
 
@@ -45,13 +46,20 @@ export const ContentTypeBuilderNav = () => {
           defaultMessage: 'Search',
         })}
       />
-      <Button
-        onClick={() => {
-          onOpenModalAIArchitect();
-        }}
-      >
-        AI Stuff
-      </Button>
+      <Flex alignItems="center" justifyContent="center" margin="12px">
+        <Button
+          variant="secondary"
+          paddingLeft="30px"
+          paddingRight="30px"
+          endIcon={<Sparkle />}
+          onClick={() => {
+            onOpenModalAIArchitect();
+          }}
+        >
+          AI Architect
+        </Button>
+      </Flex>
+
       <SubNavSections>
         {menu.map((section) => (
           <Fragment key={section.name}>
