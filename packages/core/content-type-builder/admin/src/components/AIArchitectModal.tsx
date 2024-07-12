@@ -32,6 +32,21 @@ import type { Struct, UID } from '@strapi/types';
 
 export interface AIArchitectModalProps {}
 
+interface History {
+  cursor: number;
+  items: HistoryItem[];
+}
+
+interface HistoryItem {
+  prompt: string;
+  schema?: Struct.ContentTypeSchema;
+}
+
+const DEFAULT_PROMPT = '';
+const DEFAULT_SCHEMA = undefined;
+const DEFAULT_HISTORY_ITEM = { prompt: DEFAULT_PROMPT, schema: DEFAULT_SCHEMA };
+const DEFAULT_HISTORY = { cursor: 0, items: [DEFAULT_HISTORY_ITEM] };
+
 export const AIArchitectModal: React.FC<AIArchitectModalProps> = () => {
   // Utils
   const navigate = useNavigate();
@@ -44,16 +59,29 @@ export const AIArchitectModal: React.FC<AIArchitectModalProps> = () => {
   const { createSchema, toggleAI } = useDataManager();
 
   // Local State
-  const [prompt, setPrompt] = useState<string>('');
-  const [schema, setSchema] = useState<any>(undefined);
   const [loading, setLoading] = useState<boolean>(false);
+  const [prompt, setPrompt] = useState<string>('');
+  const [history, setHistory] = useState<History>(DEFAULT_HISTORY);
+  const [current, setCurrent] = useState<HistoryItem>(DEFAULT_HISTORY_ITEM);
+
+  // Refs
   const inputRef = useRef<HTMLInputElement>(null);
 
+  // Handle history sync with currently displayed prompt/schema
+  useEffect(() => {
+    const currentItem = history.items.at(history.cursor);
+
+    setCurrent(currentItem ?? DEFAULT_HISTORY_ITEM);
+  }, [history]);
+
+  // Handle prompt input focus
   useEffect(() => {
     if (!loading) {
       inputRef.current?.focus();
     }
   }, [loading, inputRef]);
+
+  const hasSchema = () => current.schema !== undefined;
 
   /**
    * Callback function for modal visibility change.
@@ -66,6 +94,30 @@ export const AIArchitectModal: React.FC<AIArchitectModalProps> = () => {
     } else {
       onCloseModalAIArchitect();
     }
+  };
+
+  const setCursorRelative = (value: number) => {
+    return setCursorAbsolute(history.cursor + value);
+  };
+
+  const setCursorAbsolute = (newCursor: number) => {
+    setHistory({ items: [...history.items], cursor: newCursor });
+  };
+
+  const undo = () => {
+    if (history.cursor <= 0) {
+      return;
+    }
+
+    setCursorRelative(-1);
+  };
+
+  const redo = () => {
+    if (history.cursor >= history.items.length - 1) {
+      return;
+    }
+
+    setCursorRelative(1);
   };
 
   /**
@@ -82,14 +134,21 @@ export const AIArchitectModal: React.FC<AIArchitectModalProps> = () => {
   const onGenerate = async () => {
     setLoading(true);
 
+    const { schema } = current;
+
     try {
       const { data } = await post<Struct.ContentTypeSchema>(`/${pluginId}/architect`, {
         prompt,
         schema,
       });
 
-      // If a valid schema is returned
-      setSchema(data);
+      // Clean/Update history and move the cursor to the last entry
+      const nextItems = [...history.items.slice(0, history.cursor + 1), { prompt, schema: data }];
+      const nextCursor = nextItems.length - 1;
+
+      setHistory({ cursor: nextCursor, items: nextItems });
+
+      // Reset the prompt
       setPrompt('');
     } catch {
       toggleNotificationFailedToGenerateSchema();
@@ -99,6 +158,8 @@ export const AIArchitectModal: React.FC<AIArchitectModalProps> = () => {
   };
 
   const onContinue = async () => {
+    const { schema } = current;
+
     if (!schema) {
       return;
     }
@@ -144,9 +205,9 @@ export const AIArchitectModal: React.FC<AIArchitectModalProps> = () => {
               <Field.Root
                 name="prompt"
                 hint={
-                  schema === undefined
-                    ? 'Example: Create a user with auth capabilities and an about me section'
-                    : 'Example: Add a manager field'
+                  hasSchema()
+                    ? 'Example: Add an about me section'
+                    : 'Example: Create a user with auth capabilities'
                 }
                 width="100%"
               >
@@ -156,9 +217,9 @@ export const AIArchitectModal: React.FC<AIArchitectModalProps> = () => {
                   type="text"
                   name="prompt"
                   placeholder={
-                    schema === undefined
-                      ? 'What do you want to create today?'
-                      : "Is there anything you'd like to modify?"
+                    hasSchema()
+                      ? "Is there anything you'd like to modify?"
+                      : 'What do you want to create today?'
                   }
                   disabled={loading}
                   value={prompt}
@@ -172,19 +233,37 @@ export const AIArchitectModal: React.FC<AIArchitectModalProps> = () => {
               <Button
                 type="submit"
                 disabled={!prompt || loading}
-                startIcon={loading ? <Loader /> : <Sparkle width="3rem" />}
+                startIcon={loading ? <Loader /> : <Sparkle width="35px" />}
               >
-                {schema === undefined ? 'Generate' : 'Update'}
+                {hasSchema() ? 'Update' : 'Generate'}
               </Button>
             </Flex>
           </Form>
-          {schema !== undefined && <SchemaPreview schema={schema} />}
+          {hasSchema() && <SchemaPreview schema={current.schema!} />}
         </Modal.Body>
         <Modal.Footer>
           <Button onClick={onCloseModalAIArchitect} variant="danger-light">
             Cancel
           </Button>
-          <Button onClick={onContinue} disabled={!schema || loading}>
+          <Flex gap={2}>
+            <Button
+              variant="tertiary"
+              onClick={() => undo()}
+              disabled={history.cursor === 0}
+              title={history.items.at(history.cursor - 1)?.prompt}
+            >
+              Undo
+            </Button>
+            <Button
+              variant="tertiary"
+              onClick={() => redo()}
+              disabled={history.cursor >= history.items.length - 1}
+              title={history.items.at(history.cursor + 1)?.prompt}
+            >
+              Redo
+            </Button>
+          </Flex>
+          <Button onClick={onContinue} disabled={!hasSchema() || loading}>
             Continue
           </Button>
         </Modal.Footer>
@@ -214,7 +293,7 @@ const LoaderReload = styled(ArrowClockwise)`
   animation: ${rotation} 1s infinite linear;
 `;
 
-const Loader: React.FC = () => <LoaderReload width="3rem" />;
+const Loader: React.FC = () => <LoaderReload width="35px" />;
 
 const SchemaPreview: React.FC<SchemaPreviewProps> = ({ schema }) => {
   const { info, attributes } = schema;
