@@ -2,6 +2,7 @@ import { Ref, RefObject, useEffect, useRef, useState } from 'react';
 
 import {
   Box,
+  Link,
   Button,
   Flex,
   IconButton,
@@ -193,6 +194,11 @@ const KapaPrompt = ({ modalBodyRef }: { modalBodyRef: RefObject<HTMLDivElement> 
                     <Box as="li" marginBottom={2}>
                       <Typography>{children}</Typography>
                     </Box>
+                  ),
+                  a: ({ href, children }) => (
+                    <Link href={String(href)}>
+                      {String(children)}
+                    </Link>
                   ),
                   p: ({ children }) => <Typography>{children}</Typography>,
                   pre: ({ children }) => (
