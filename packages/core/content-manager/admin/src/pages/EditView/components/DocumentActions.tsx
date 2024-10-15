@@ -27,6 +27,7 @@ import { DefaultTheme } from 'styled-components';
 import { PUBLISHED_AT_ATTRIBUTE_NAME } from '../../../constants/attributes';
 import { SINGLE_TYPES } from '../../../constants/collections';
 import { useDocumentRBAC } from '../../../features/DocumentRBAC';
+import { useDebounce } from '../../../hooks/useDebounce';
 import { useDoc } from '../../../hooks/useDocument';
 import { useDocumentActions } from '../../../hooks/useDocumentActions';
 import { CLONE_PATH, LIST_PATH } from '../../../router';
@@ -751,6 +752,36 @@ const PublishAction: DocumentActionComponent = ({
 
 PublishAction.type = 'publish';
 
+function useDebouncedEffect(
+  callback: (...args: any) => any,
+  timeout: number,
+  deps: unknown[] = []
+) {
+  const data = React.useRef<{ firstTime: boolean; clearFunc?: (...args: any[]) => any }>({
+    firstTime: true,
+    clearFunc: undefined,
+  });
+  React.useEffect(() => {
+    const { firstTime, clearFunc } = data.current;
+
+    if (firstTime) {
+      data.current.firstTime = false;
+      return;
+    }
+
+    const handler = setTimeout(() => {
+      if (clearFunc && typeof clearFunc === 'function') {
+        clearFunc();
+      }
+      data.current.clearFunc = callback();
+    }, timeout);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [timeout, callback, ...deps]);
+}
+
 const UpdateAction: DocumentActionComponent = ({
   activeTab,
   documentId,
@@ -775,7 +806,7 @@ const UpdateAction: DocumentActionComponent = ({
   const setErrors = useForm('UpdateAction', (state) => state.setErrors);
   const resetForm = useForm('PublishAction', ({ resetForm }) => resetForm);
 
-  return {
+  const action = {
     /**
      * Disabled when:
      * - the form is submitting
@@ -882,7 +913,27 @@ const UpdateAction: DocumentActionComponent = ({
         setSubmitting(false);
       }
     },
-  };
+  } satisfies ReturnType<DocumentActionComponent>;
+
+  const { schema } = useDoc();
+
+  const hasDraftAndPublished = schema?.options?.draftAndPublish ?? false;
+
+  useDebouncedEffect(
+    () => {
+      if (hasDraftAndPublished && modified) {
+        action.onClick();
+      }
+    },
+    1000,
+    [modified, hasDraftAndPublished]
+  );
+
+  if (hasDraftAndPublished) {
+    return null;
+  }
+
+  return action;
 };
 
 UpdateAction.type = 'update';
