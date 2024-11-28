@@ -3,8 +3,7 @@
   "compilerOptions": {
     "outDir": "dist",
     "noEmit": false,
-    "emitDeclarationOnly": true,
-    "allowJs": false
+    "allowJs": false,
   },
   "include": ["src"],
   "exclude": ["node_modules", "**/__tests__/**", "dist"]

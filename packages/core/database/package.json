@@ -31,12 +31,12 @@
     "dist/"
   ],
   "scripts": {
-    "build": "pack-up build",
+    "build": "run -T rollup -c",
     "clean": "run -T rimraf ./dist",
     "lint": "run -T tsc --noEmit && run -T eslint .",
     "test:unit": "run -T jest",
     "test:unit:watch": "run -T jest --watch",
-    "watch": "pack-up watch"
+    "watch": "run -T rollup -c -w"
   },
   "dependencies": {
     "@paralleldrive/cuid2": "2.2.2",

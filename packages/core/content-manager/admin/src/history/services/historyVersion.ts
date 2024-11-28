@@ -1,4 +1,4 @@
-import { Data } from '@strapi/types';
+import type { Data } from '@strapi/types';
 
 import {
   GetHistoryVersions,

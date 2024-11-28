@@ -14,7 +14,7 @@ import {
   getYupValidationErrors,
   useForm,
 } from '@strapi/admin/strapi-admin';
-import { Modules } from '@strapi/types';
+import type { Modules } from '@strapi/types';
 import { useParams } from 'react-router-dom';
 import { ValidationError } from 'yup';
 

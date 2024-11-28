@@ -41,11 +41,11 @@
     "templates/"
   ],
   "scripts": {
-    "build": "pack-up build",
+    "build": "run -T rollup -c",
     "clean": "run -T rimraf ./dist",
     "lint": "run -T eslint .",
     "test:ts": "run -T tsc --noEmit",
-    "watch": "pack-up watch"
+    "watch": "run -T rollup -c -w"
   },
   "dependencies": {
     "@strapi/cloud-cli": "5.4.1",

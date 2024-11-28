@@ -16,7 +16,7 @@ import {
   Modal,
   Field,
 } from '@strapi/design-system';
-import { UID } from '@strapi/types';
+import type { UID } from '@strapi/types';
 import { Formik, Form } from 'formik';
 import { useIntl } from 'react-intl';
 

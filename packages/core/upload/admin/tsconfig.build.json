@@ -3,7 +3,10 @@
   "compilerOptions": {
     "rootDir": "../",
     "baseUrl": ".",
-    "outDir": "./dist"
+    "outDir": "./dist",
+    "emitDeclarationOnly": true,
+    "declaration": true,
+    "noEmit": false,
   },
   "include": ["./src", "./custom.d.ts", "../shared", "../package.json"],
   "exclude": ["**/__mocks__", "./src/**/tests", "**/*.test.*"]

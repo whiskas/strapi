@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { useQueryParams, useTracking, useForm } from '@strapi/admin/strapi-admin';
 import { Button, Flex, Tooltip, type TooltipProps } from '@strapi/design-system';
-import { UID } from '@strapi/types';
+import type { UID } from '@strapi/types';
 import { stringify } from 'qs';
 import { useIntl } from 'react-intl';
 import { Link, useLocation } from 'react-router-dom';

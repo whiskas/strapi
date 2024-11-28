@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { Main } from '@strapi/design-system';
-import { Modules } from '@strapi/types';
+import type { Modules } from '@strapi/types';
 import { useIntl } from 'react-intl';
 import { useNavigate, useMatch } from 'react-router-dom';
 
