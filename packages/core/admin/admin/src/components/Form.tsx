@@ -674,7 +674,8 @@ interface FieldValue<TValue = any> {
   rawError?: any;
 }
 
-const useField = <TValue = any,>(path: string): FieldValue<TValue | undefined> => {
+
+function useField<TValue = any>(path: string): FieldValue<TValue | undefined> {
   const { formatMessage } = useIntl();
 
   const initialValue = useForm(
