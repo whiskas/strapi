@@ -71,12 +71,11 @@ export type { RBACContext, RBACMiddleware } from './core/apis/rbac';
  * Utils
  */
 export { translatedErrors } from './utils/translatedErrors';
-export { getFetchClient, isFetchError } from './utils/getFetchClient';
+export { getFetchClient, isFetchError, FetchError } from './utils/getFetchClient';
 export type {
   ErrorResponse,
   FetchClient,
   FetchConfig,
-  FetchError,
   FetchOptions,
   FetchResponse,
 } from './utils/getFetchClient';
