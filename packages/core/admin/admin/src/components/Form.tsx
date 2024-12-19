@@ -674,7 +674,6 @@ interface FieldValue<TValue = any> {
   rawError?: any;
 }
 
-
 function useField<TValue = any>(path: string): FieldValue<TValue | undefined> {
   const { formatMessage } = useIntl();
 
@@ -724,7 +723,7 @@ function useField<TValue = any>(path: string): FieldValue<TValue | undefined> {
     onChange: handleChange,
     value: value,
   };
-};
+}
 
 const isErrorMessageDescriptor = (object?: object): object is TranslationMessage => {
   return (
