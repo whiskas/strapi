@@ -107,6 +107,8 @@ const AutoReloadOverlayBlockerProvider = ({ children }: AutoReloadOverlayBlocker
     [lockAppWithAutoreload, unlockAppWithAutoreload]
   );
 
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
   return (
     <AutoReloadOverlayBlockerContext.Provider value={autoReloadValue}>
       <Blocker
@@ -127,12 +129,12 @@ interface BlockerProps {
   title: MessageDescriptor;
 }
 
-const Blocker = ({ displayedIcon, description, title, isOpen }: BlockerProps) => {
+const Blocker = ({ displayedIcon, description, title, isOpen }: BlockerProps): JSX.Element | null => {
   const { formatMessage } = useIntl();
 
   // eslint-disable-next-line no-undef
   return isOpen && globalThis?.document?.body
-    ? createPortal(
+    ? (createPortal(
         <Overlay id="autoReloadOverlayBlocker" direction="column" alignItems="center" gap={6}>
           <Flex direction="column" alignItems="center" gap={2}>
             <Typography tag="h1" variant="alpha">
@@ -163,7 +165,7 @@ const Blocker = ({ displayedIcon, description, title, isOpen }: BlockerProps) =>
         </Overlay>,
         // eslint-disable-next-line no-undef
         globalThis.document.body
-      )
+      ) as JSX.Element)
     : null;
 };
 

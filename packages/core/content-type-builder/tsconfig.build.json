@@ -4,5 +4,8 @@
   "compilerOptions": {
     "declarationDir": "./dist",
     "outDir": "./dist"
+  },
+  "paths": {
+    "react": [ "./node_modules/@types/react" ]
   }
 }
