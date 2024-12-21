@@ -4,8 +4,5 @@
   "compilerOptions": {
     "rootDir": "../",
     "baseUrl": "."
-  },
-  "paths": {
-    "react": [ "./node_modules/@types/react" ]
   }
 }

@@ -1,7 +1,7 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import outdent from 'outdent';
-import { createElement } from 'react';
+import {createElement} from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { DefaultDocument } from '@strapi/admin/_internal';
 
@@ -53,6 +53,8 @@ interface GetDocumentHTMLArgs extends Pick<BuildContext, 'logger'> {
  * to load a user's Document component?
  */
 const getDocumentHTML = ({ logger, props = {} }: GetDocumentHTMLArgs) => {
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
   const result = renderToStaticMarkup(createElement(DefaultDocument, props));
   logger.debug('Rendered the HTML');
 

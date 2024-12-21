@@ -1,4 +1,5 @@
 import { NoJavascript } from './NoJavascript';
+import {ReactNode} from "react";
 
 /**
  * TODO: add favicons.........
