@@ -99,13 +99,15 @@ const resolveDevelopmentConfig = async (ctx: BuildContext): Promise<InlineConfig
 
 const USER_CONFIGS = ['vite.config.js', 'vite.config.mjs', 'vite.config.ts'];
 
-type UserViteConfig = (config: UserConfig) => UserConfig;
+type UserViteConfig = (config: UserConfig, ctx?: BuildContext) => UserConfig;
 
 const mergeConfigWithUserConfig = async (config: InlineConfig, ctx: BuildContext) => {
+  // eslint-disable-next-line no-debugger
+  debugger;
   const userConfig = await getUserConfig<UserViteConfig>(USER_CONFIGS, ctx);
 
   if (userConfig) {
-    return userConfig(config);
+    return userConfig(config, ctx);
   }
 
   return config;

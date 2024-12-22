@@ -4,6 +4,8 @@ import chokidar from 'chokidar';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import cluster from 'node:cluster';
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
 import { createStrapi } from '@strapi/core';
 
 import type { CLIContext } from '../cli/types';
@@ -78,6 +80,17 @@ const develop = async ({
   ...options
 }: DevelopOptions) => {
   const timer = getTimer();
+
+  console.log('#####################################');
+  console.log('#####################################');
+  console.log('#####################################');
+  console.log('############# DEVELOP ###############');
+  console.log('############# DEVELOP ###############');
+  // eslint-disable-next-line no-debugger
+  debugger;
+  console.log('#####################################');
+  console.log('#####################################');
+  console.log('#####################################');
 
   if (cluster.isPrimary) {
     const { didInstall } = await checkRequiredDependencies({ cwd, logger }).catch((err) => {

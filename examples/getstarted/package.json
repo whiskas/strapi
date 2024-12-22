@@ -7,7 +7,7 @@
   "scripts": {
     "build": "strapi build",
     "build:ce": "STRAPI_DISABLE_EE=true strapi build",
-    "develop": "strapi develop",
+    "develop": "STRAPI_DISABLE_EE=true strapi develop",
     "develop:ce": "STRAPI_DISABLE_EE=true strapi develop",
     "start": "strapi start",
     "strapi": "strapi"
@@ -41,5 +41,8 @@
   },
   "strapi": {
     "uuid": "getstarted"
+  },
+  "devDependencies": {
+    "vite-plugin-inspect": "0.8.9"
   }
 }

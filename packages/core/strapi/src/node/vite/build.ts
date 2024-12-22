@@ -4,6 +4,10 @@ import type { BuildContext } from '../create-build-context';
 
 const build = async (ctx: BuildContext) => {
   const config = await resolveProductionConfig(ctx);
+
+  // eslint-disable-next-line no-debugger
+  debugger;
+
   const finalConfig = await mergeConfigWithUserConfig(config, ctx);
 
   const { build: viteBuild } = await import('vite');

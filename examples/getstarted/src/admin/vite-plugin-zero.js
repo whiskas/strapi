@@ -1,17 +1,27 @@
-import type { Plugin } from 'vite';
+import { getDocumentHTML, writeStaticClientFiles } from './staticFiles';
 
-import { getDocumentHTML } from '../staticFiles';
-import type { BuildContext } from '../create-build-context';
+console.log(' ######## ZERO PLUGIN #########');
+console.log(' ######## ZERO PLUGIN #########');
+console.log(' ######## ZERO PLUGIN #########');
 
-const buildFilesPlugin = (ctx: BuildContext): Plugin => {
-  const CHUNK_ID = '.strapi/client/app.js';
+const buildZeroFilesPlugin = async (ctx) => {
+  console.log(' ######## BUILD ZERO PLUGIN #########');
+  console.log(' ######## BUILD ZERO PLUGIN #########');
+  console.log(' ######## BUILD ZERO PLUGIN #########');
+  console.log(' ######## BUILD ZERO PLUGIN #########');
+
+  await writeStaticClientFiles(ctx);
+
+  const CHUNK_ID = '.strapi/client/zero.js';
 
   // eslint-disable-next-line no-debugger
   debugger;
+
   return {
-    name: 'strapi/server/build-files',
+    name: 'strapi/shop/build-files',
     apply: 'build',
     buildStart() {
+      console.log(' ######## ON BUILD START ZERO PLUGIN #########');
       this.emitFile({
         type: 'chunk',
         id: CHUNK_ID,
@@ -19,8 +29,8 @@ const buildFilesPlugin = (ctx: BuildContext): Plugin => {
       });
     },
     async generateBundle(_options, outputBundle) {
-      // eslint-disable-next-line no-debugger
       debugger;
+      console.log(' ######## ON GENERATE BUNDLE ZERO PLUGIN #########');
       const bundle = outputBundle;
       const entryFile = Object.values(bundle).find(
         (file) =>
@@ -40,7 +50,7 @@ const buildFilesPlugin = (ctx: BuildContext): Plugin => {
 
       this.emitFile({
         type: 'asset',
-        fileName: 'index.html',
+        fileName: 'shop.html',
         source: getDocumentHTML({
           logger: ctx.logger,
           props: {
@@ -52,4 +62,4 @@ const buildFilesPlugin = (ctx: BuildContext): Plugin => {
   };
 };
 
-export { buildFilesPlugin };
+export { buildZeroFilesPlugin };
