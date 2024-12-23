@@ -24,11 +24,10 @@ const ShopDocument = ({ entryPath }) => {
         </style>
 
         <title>Shop Front</title>
-        <style>{globalStyles}</style>
       </head>
       <body>
         <div id="shop" />
-        {entryPath ? <script type="module" src={entryPath} /> : null}
+        ${entryPath ? `<script type="module" src="${entryPath}" />` : null}
       </body>
     </html>
   `;

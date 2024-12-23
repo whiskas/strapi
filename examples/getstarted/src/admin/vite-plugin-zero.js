@@ -4,15 +4,16 @@ console.log(' ######## ZERO PLUGIN #########');
 console.log(' ######## ZERO PLUGIN #########');
 console.log(' ######## ZERO PLUGIN #########');
 
-const buildZeroFilesPlugin = async (ctx) => {
+const buildZeroFilesPlugin = (ctx) => {
   console.log(' ######## BUILD ZERO PLUGIN #########');
   console.log(' ######## BUILD ZERO PLUGIN #########');
   console.log(' ######## BUILD ZERO PLUGIN #########');
   console.log(' ######## BUILD ZERO PLUGIN #########');
 
-  await writeStaticClientFiles(ctx);
+  const shopEntry = "admin/.strapi/client/shop.js"
+  writeStaticClientFiles(ctx, shopEntry);
 
-  const CHUNK_ID = '.strapi/client/zero.js';
+  const CHUNK_ID = '.strapi/client/shop.js';
 
   // eslint-disable-next-line no-debugger
   debugger;
@@ -25,7 +26,7 @@ const buildZeroFilesPlugin = async (ctx) => {
       this.emitFile({
         type: 'chunk',
         id: CHUNK_ID,
-        name: 'strapi',
+        name: 'shop',
       });
     },
     async generateBundle(_options, outputBundle) {
@@ -34,7 +35,7 @@ const buildZeroFilesPlugin = async (ctx) => {
       const bundle = outputBundle;
       const entryFile = Object.values(bundle).find(
         (file) =>
-          file.type === 'chunk' && file.name === 'strapi' && file.facadeModuleId?.endsWith(CHUNK_ID)
+          file.type === 'chunk' && file.name === 'shop' && file.facadeModuleId?.endsWith(CHUNK_ID)
       );
 
       if (!entryFile) {

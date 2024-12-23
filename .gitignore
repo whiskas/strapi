@@ -88,7 +88,7 @@ results
 build
 node_modules
 .node_history
-package-lock.json
+package-lock.json.backup
 **/package-lock.json
 !docs/package-lock.json
 *.heapsnapshot

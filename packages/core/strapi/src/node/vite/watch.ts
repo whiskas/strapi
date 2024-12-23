@@ -85,6 +85,8 @@ const watch = async (ctx: BuildContext): Promise<ViteWatcher> => {
 
     const url = koaCtx.originalUrl;
 
+    // eslint-disable-next-line no-debugger
+    debugger;
     let template = await fs.readFile(path.relative(ctx.cwd, '.strapi/client/index.html'), 'utf-8');
     template = await vite.transformIndexHtml(url, template);
 
