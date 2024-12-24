@@ -103,7 +103,7 @@ type UserViteConfig = (config: UserConfig, ctx?: BuildContext) => UserConfig;
 
 const mergeConfigWithUserConfig = async (config: InlineConfig, ctx: BuildContext) => {
   // eslint-disable-next-line no-debugger
-  debugger;
+  // debugger;
   const userConfig = await getUserConfig<UserViteConfig>(USER_CONFIGS, ctx);
 
   if (userConfig) {

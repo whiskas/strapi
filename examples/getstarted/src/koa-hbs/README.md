@@ -26,8 +26,8 @@ app.use(hbs.middleware({
 
 // Render is attached to the koa context. Call `this.render` in your middleware
 // to attach rendered html to the koa response body.
-app.use(function *() {
-  yield this.render('main', {title: 'koa-hbs'});
+app.use(function* () {
+  yield this.entryServer('main', {title: 'koa-hbs'});
 })
 
 app.listen(3000);
@@ -167,11 +167,11 @@ As of version 0.9.0, it's possible to override the layout used for rendering,
 using `locals`. For example:
 
 ```js
-router.get('/', function *() {
-  yield this.render('foo', {
+router.get('/', function* () {
+  yield this.entryServer('foo', {
     layout: 'bar'
   });
- });
+});
  ```
 
 See the [tests](https://github.com/gilt/koa-hbs/blob/master/test/app/index.js#L44)

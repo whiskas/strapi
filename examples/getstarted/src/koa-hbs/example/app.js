@@ -11,7 +11,7 @@ app.use(hbs.middleware({
 // Render is attached to the koa context. Call this.render in your middleware
 // to attach your rendered html to the response body.
 app.use(function *() {
-  yield this.render('main', {title: 'koa-hbs'});
+  yield this.entryServer('main', {title: 'koa-hbs'});
 })
 
 app.listen(3000);

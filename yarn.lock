@@ -8720,6 +8720,7 @@ __metadata:
     semver: "npm:7.5.4"
     statuses: "npm:2.0.1"
     supertest: "npm:6.3.3"
+    svelte: "npm:5.15.0"
     tsconfig: "npm:5.6.0"
     typescript: "npm:5.3.2"
     undici: "npm:6.19.2"
