@@ -14,7 +14,8 @@ const data = {
 console.log(Main);
 
 const app = hydrate(Main, {
-  target: document.getElementById('shop'),
+  // target: document.getElementById('shop'),
+  target: document.body,
   props: {
     name: 'world'
   }
@@ -29,3 +30,5 @@ console.log(html);
 
 // export default {}
 console.log('hi mane');
+
+export default {}

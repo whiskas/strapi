@@ -8,7 +8,7 @@ const { mergeConfig } = require('vite');
 
 module.exports = (config, ctx) => {
   // Important: always return the modified config
-  debugger;
+  // debugger;
   return mergeConfig(config, {
     resolve: {
       alias: {
@@ -18,7 +18,12 @@ module.exports = (config, ctx) => {
     plugins: [
       buildZeroFilesPlugin(ctx),
       viteHandlebarsPrecompilePlugin(),
-      svelte(),
+      svelte({
+        // Enable SSR mode
+        compilerOptions: {
+          hydratable: true,
+        },
+      }),
       Inspect({
         bundle: true,
         outputDir: '.vite-inspect'

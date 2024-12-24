@@ -40,7 +40,7 @@ const watch = async (ctx: BuildContext): Promise<ViteWatcher> => {
   const finalConfig = await mergeConfigWithUserConfig(config, ctx);
 
   // eslint-disable-next-line no-debugger
-  debugger;
+  // debugger;
 
   const hmrConfig = config.server?.hmr;
 
@@ -52,12 +52,13 @@ const watch = async (ctx: BuildContext): Promise<ViteWatcher> => {
     });
   }
 
+  // eslint-disable-next-line no-debugger
+  // debugger;
+
   ctx.logger.debug('Vite config', finalConfig);
 
   const { createServer } = await import('vite');
 
-  // eslint-disable-next-line no-debugger
-  debugger;
   const vite = await createServer(finalConfig);
 
   const viteMiddlewares: Core.MiddlewareHandler = (koaCtx, next) => {

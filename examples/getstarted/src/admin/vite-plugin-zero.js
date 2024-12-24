@@ -16,12 +16,13 @@ const buildZeroFilesPlugin = (ctx) => {
   const CHUNK_ID = '.strapi/client/shop.js';
 
   // eslint-disable-next-line no-debugger
-  debugger;
+  // debugger;
 
   return {
     name: 'strapi/shop/build-files',
     apply: 'build',
     buildStart() {
+      debugger;
       console.log(' ######## ON BUILD START ZERO PLUGIN #########');
       this.emitFile({
         type: 'chunk',
