@@ -3,6 +3,7 @@ import { default as App } from './hello.svelte'
 
 export default async function ({ template }) {
   try {
+    console.log(" ### entry-server ### ");
     const html = render(App, {
       props: { title: "hello"}
     })

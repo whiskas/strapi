@@ -20,14 +20,13 @@ module.exports = (config, ctx) => {
       viteHandlebarsPrecompilePlugin(),
       svelte({
         // Enable SSR mode
-        compilerOptions: {
-          hydratable: true,
-        },
+        // compilerOptions: { },
       }),
       Inspect({
         bundle: true,
         outputDir: '.vite-inspect'
       }), // port: 5173,  localhost:5173/__inspect
     ],
+    server: { middlewareMode: 'ssr' }
   });
 };

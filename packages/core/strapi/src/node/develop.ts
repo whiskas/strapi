@@ -82,13 +82,8 @@ const develop = async ({
   const timer = getTimer();
 
   console.log('#####################################');
-  console.log('#####################################');
-  console.log('#####################################');
-  console.log('############# DEVELOP ###############');
   console.log('############# DEVELOP ###############');
   // eslint-disable-next-line no-debugger
-  console.log('#####################################');
-  console.log('#####################################');
   console.log('#####################################');
 
   if (cluster.isPrimary) {

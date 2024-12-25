@@ -1,36 +1,37 @@
 const path = require('path');
-const hbs = require('../koa-hbs');
-// const server  = import('svelte/server');
-// import { render} from 'svelte/server';
 
+module.exports =  (config, { strapi }) => {
 
-module.exports = (config, { strapi }) => {
+  const shopRoute = `/shop/:path*`;
+
+  strapi.server.router.get(shopRoute, (ctx, next)=>{
+    console.log(" hello from shop route - controller");
+    next();
+  });
+  // strapi.server.router.use(adminRoute, viteMiddlewares);
+  strapi.server.router.use(shopRoute, (ctx, next) => {
+    console.log(" hello from shop route - viteMiddleware");
+    next();
+  });
 
   console.log(' ##  ##  ##  ##  middleware ## ## ## ##');
-  return async function (ctx, next) {
+  return async (ctx, next) => {
 
-    // const { render } = await import('svelte/server');
+    const isShopRequest = ctx.path.startsWith('/shop') || ctx.path === '/';
 
-    console.log(' ##  ##  ##  ##  inside middleware request ## ## ## ##');
-
-    hbs.configure({
-      viewPath: path.join(__dirname, '..', 'views'),
-      debug: true
-    })
-    const render = hbs.createRenderer();
-
-    const html = await render('main', {title: "hello man, you rock", layout: "layout"});
-
-    if (ctx.path.startsWith('/admin/') || ctx.path.startsWith('/api/')) {
-      await next();
-      return;
+    if (!isShopRequest) {
+      return next();
     }
+
+    console.log(' ##  ##  inside middleware request ## ## PATH: ', ctx.path);
+
+    console.log("  THIS IS A SHOP REQUEST  ");
 
     if (ctx.path === '/') {
       try {
         // const Hello = await import('../admin/hello.svelte');
         // const { html, head, css } = render(Hello, { props: { title: "hello server svelte"}});
-        ctx.body = html;
+        // ctx.body = "hello from middleware"// html;
       } catch (error) {
         strapi.log.error('Error rendering middleware page:', error);
         ctx.status = 500;
