@@ -1,6 +1,8 @@
 module.exports = async () => {
   process.nextTick(() =>{
-    console.log(strapi)
+    // here starapi is available (global)
+    // console.log(strapi)
+
   })
 
 };

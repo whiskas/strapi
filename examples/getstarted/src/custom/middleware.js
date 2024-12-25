@@ -4,15 +4,15 @@ module.exports =  (config, { strapi }) => {
 
   const shopRoute = `/shop/:path*`;
 
-  // strapi.server.router.get(shopRoute, (ctx, next)=>{
-  //   console.log(" hello from shop route - controller");
-  //   next();
-  // });
-  // // strapi.server.router.use(adminRoute, viteMiddlewares);
-  // strapi.server.router.use(shopRoute, (ctx, next) => {
-  //   console.log(" hello from shop route - viteMiddleware");
-  //   next();
-  // });
+  strapi.server.router.get(shopRoute, async (ctx, next)=>{
+    console.log(" hello from shop route - controller");
+    await next();
+  });
+  // strapi.server.router.use(adminRoute, viteMiddlewares);
+  strapi.server.router.use(shopRoute, async (ctx, next) => {
+    console.log(" hello from shop route - viteMiddleware");
+    await next();
+  });
 
   console.log(' ##  ##  ##  ##  middleware ## ## ## ##');
   return async (ctx, next) => {
