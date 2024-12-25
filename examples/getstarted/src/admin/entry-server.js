@@ -12,8 +12,8 @@ export default async function ({ template }) {
       body: template
         .replace('</head>', `${html.head}</head>`)
         .replace(
-          '<div id="app">',
-          `<div id="app">${
+          '<div id="shop">',
+          `<div id="shop">${
             html.body
           }
           `

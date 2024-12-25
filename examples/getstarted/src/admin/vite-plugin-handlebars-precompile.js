@@ -62,8 +62,6 @@ export default function viteHandlebarsPrecompilePlugin() {
         template = await server.transformIndexHtml(req.url, template);
         const render = (await server.ssrLoadModule('/src/admin/entry-server.js')).default;
         const _html = await render({ template });
-        console.log(' ssr render svelte page ', await render({ template }));
-        console.log('where hes goin?');
 
         res.setHeader('Content-Type', 'text/html');
         res.statusCode = 200;

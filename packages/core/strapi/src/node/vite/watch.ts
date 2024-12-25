@@ -100,7 +100,7 @@ const watch = async (ctx: BuildContext): Promise<ViteWatcher> => {
 
   ctx.strapi.server.router.get(adminRoute, serveAdmin);
   ctx.strapi.server.router.use(adminRoute, viteMiddlewares);
-  // ctx.strapi.server.router.use('/shop/:path*', viteMiddlewares);
+  ctx.strapi.server.router.use('/shop/:path*', viteMiddlewares);
 
   return {
     async close() {
