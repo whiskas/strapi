@@ -1,11 +1,11 @@
 import { render } from 'svelte/server'
-import { default as App } from './hello.svelte'
+import { default as App } from './App.svelte'
 
 export default async function ({ template }) {
   try {
-    console.log(" ### entry-server ### ");
+    console.log(" ### entry-server: handle SSR ### ");
     const html = render(App, {
-      props: { title: "hello"}
+      props: { name: "Just a beautiful day"}
     })
 
     return {

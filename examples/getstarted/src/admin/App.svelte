@@ -9,6 +9,14 @@
   };
 </script>
 
+<svelte:head>
+  <style>
+    h1 {
+      color: blue;
+    }
+  </style>
+</svelte:head>
+
 <div>
   <h1>{name}</h1>
   <button on:click={updateCart}>Add $200 to Cart</button>

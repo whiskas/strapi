@@ -1,7 +1,6 @@
 // vite.config.ts
 import Inspect from 'vite-plugin-inspect';
-import {buildZeroFilesPlugin} from './vite-plugin-zero'
-import viteHandlebarsPrecompilePlugin from './vite-plugin-handlebars-precompile';
+import renderSvelteApp from './vite-plugin-svelte-render';
 import { svelte } from './@sveltejs/vite-plugin-svelte/src/index';
 
 const { mergeConfig } = require('vite');
@@ -16,8 +15,7 @@ module.exports = (config, ctx) => {
       },
     },
     plugins: [
-      buildZeroFilesPlugin(ctx),
-      viteHandlebarsPrecompilePlugin(),
+      renderSvelteApp(ctx), // сейчас работает для дев-сервера
       svelte({
         // Enable SSR mode
         // compilerOptions: { },
