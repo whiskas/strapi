@@ -14,6 +14,13 @@ interface CommonProps {
 
 export interface File extends CommonProps {
   content: string; // 文件内容
+  extension: string | undefined;
+  size: number;
+  lastModified: string;
+  created: string;
+  path: string;
+  readable: boolean;
+  writable: boolean;
 }
 
 export interface Directory extends CommonProps {

@@ -1,4 +1,32 @@
-this is
-some file text
-just text
-u wanna edit
+<script>
+
+  import Home from "./Home.svelte";
+  import Layout from  "./Layout.svelte"
+  export let userCart = { total: 0 };
+  export let name;
+
+  // Example function to simulate an update
+  const updateCart = () => {
+    console.log('hello', userCart.total);
+    userCart = { total: userCart.total + 200 }; // Update total dynamically
+  };
+</script>
+
+<svelte:head>
+  <style>
+    h1 {
+      color: blue;
+    }
+  </style>
+</svelte:head>
+
+<div>
+  <h1>{name}</h1>
+  <button on:click={updateCart}>Add $200 to Cart</button>
+  <div>cart is {userCart.total}</div>
+
+  <Layout>
+    <Home/>
+  </Layout>
+
+</div>

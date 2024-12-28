@@ -13,8 +13,8 @@ const Aside = styled.aside`
   display: block;
   width: 250px;
   height: 100vh;
-  border-right: 2px solid;
-  border-color: #242424;
+  border-right: 1px solid;
+  border-color: #dadada;
   padding-top: 3px;
 `
 
