@@ -15,7 +15,7 @@ export default {
         id: `${pluginId}.plugin.name`,
         defaultMessage: 'My plugin',
       },
-      Component: () => import('./pages/App'),
+      Component: () => import('./pages/monaco/App'),
       permissions: [],
     });
 
