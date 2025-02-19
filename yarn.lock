@@ -18940,6 +18940,7 @@ __metadata:
     better-sqlite3: "npm:11.3.0"
     crypto: "npm:1.0.1"
     lodash: "npm:4.17.21"
+    monaco-vim: "npm:0.4.2"
     mysql2: "npm:3.9.8"
     passport-google-oauth2: "npm:0.2.0"
     pg: "npm:8.11.1"
@@ -24053,6 +24054,15 @@ __metadata:
   version: 1.0.1
   resolution: "modify-values@npm:1.0.1"
   checksum: 10c0/6acb1b82aaf7a02f9f7b554b20cbfc159f223a79c66b0a257511c5933d50b85e12ea1220b0a90a2af6f80bc29ff784f929a52a51881867a93ae6a12ce87a729a
+  languageName: node
+  linkType: hard
+
+"monaco-vim@npm:0.4.2":
+  version: 0.4.2
+  resolution: "monaco-vim@npm:0.4.2"
+  peerDependencies:
+    monaco-editor: "*"
+  checksum: 10c0/f4ba002c9cfc645d7af2cc28786c680f344e92561fa1c756baf968b6a1a5dce3d1d4c80bb8698925350869590485f40a07d34e8e12d3ca9941d56668279fd6b5
   languageName: node
   linkType: hard
 

@@ -48,6 +48,7 @@
     "@emotion/styled": "11.14.0",
     "@monaco-editor/react": "4.6.0",
     "crypto": "1.0.1",
+    "monaco-vim": "0.4.2",
     "react-icons": "5.4.0",
     "vite-plugin-inspect": "0.8.9"
   }

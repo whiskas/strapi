@@ -102,18 +102,16 @@ export default async function (ctx) {
 
       // Example: Adding a custom middleware
       server.middlewares.use(async (req, res, next) => {
-        console.log(' !!!!!!!!!!!! vite vite vite middleware.use(...   PATH: ', req.url);
+        // console.log(' !!!!!!!!!!!! vite vite vite middleware.use(...   PATH: ', req.url);
 
         const isShopRequest = req.url.startsWith('/shop') || req.url === '/';
 
         if (!isShopRequest) return next();
 
-        // let template = fs.readFileSync(path.join(__dirname, '..', 'custom/shop.html'), 'utf-8');
         let template = fs.readFileSync(path.relative(ctx.cwd, '.strapi/client/shop.html'), 'utf-8');
-        // let template = '<html><head></head><body><h1>HAHA</h1><div id="app">no work</id></body></html>';
         template = await server.transformIndexHtml(req.url, template);
         const render = (await server.ssrLoadModule('/src/admin/entry-server.js')).default;
-        const _html = await render({ template });
+        const _html = await render({ url: req.url, template });
 
         res.setHeader('Content-Type', 'text/html');
         res.statusCode = 200;
@@ -122,10 +120,10 @@ export default async function (ctx) {
       });
 
       // // Example: Listening to server events
-      // server.httpServer?.on('listening', () => {
-      //   const address = server.httpServer?.address();
-      //   console.log(`Dev server is running on http://${address.address}:${address.port}`);
-      // });
+      server.httpServer?.on('listening', () => {
+        const address = server.httpServer?.address();
+        console.log(`Dev server is running on http://${address.address}:${address.port}`);
+      });
     },
   };
 }

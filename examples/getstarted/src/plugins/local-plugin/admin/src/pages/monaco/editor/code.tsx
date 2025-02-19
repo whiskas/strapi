@@ -1,5 +1,6 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import Editor from "@monaco-editor/react";
+// import { initVimMode } from 'monaco-vim';
 import {File} from "../utils/file-manager";
 import styled from "@emotion/styled";
 
@@ -7,18 +8,28 @@ export const Code = ({selectedFile}: { selectedFile: File | undefined }) => {
   if (!selectedFile)
     return null
 
-  console.log('selected file is ', selectedFile);
+  const editorRef = useRef(null);
+
+  // Initialize Vim mode
+  const statusNode = document.createElement('div'); // Optional: Vim status bar
+  document.body.appendChild(statusNode);
 
   const code = selectedFile.content
-  const ext = selectedFile.extension;
-  let language = selectedFile.name.split('.').pop()
+  let language = selectedFile.extension;
+  // let language = selectedFile.name.split('.').pop()
 
   if (language === "js" || language === "jsx")
     language = "javascript";
   else if (language === "ts" || language === "tsx")
     language = "typescript"
-  else if (ext === "svelte")
+  else if (language === "svelte")
     language = "html"
+
+  function handleEditorDidMount(editor, monaco) {
+    // here is the editor instance
+    // you can store it in `useRef` for further usage
+    editorRef.current = editor;
+  }
 
   function handleEditorWillMount(monaco: any) {
     // here is the monaco instance
@@ -46,6 +57,7 @@ export const Code = ({selectedFile}: { selectedFile: File | undefined }) => {
         value={code}
         theme="vs-light"
         beforeMount={handleEditorWillMount}
+        onMount={handleEditorDidMount}
       />
     </Div>
   )
