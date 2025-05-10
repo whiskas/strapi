@@ -79,7 +79,7 @@ const writeStaticClientFiles = async (ctx: BuildContext) => {
   const prettier = await import('prettier'); // ESM-only
 
   // eslint-disable-next-line no-debugger
-  debugger;
+  // debugger;
 
   /**
    * For everything to work effectively we create a client folder in `.strapi` at the cwd level.

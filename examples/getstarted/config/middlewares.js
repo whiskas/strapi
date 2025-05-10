@@ -12,6 +12,9 @@ module.exports = [
         useDefaults: true,
         directives: {
           'frame-src': ["'self'"], // URLs that will be loaded in an iframe (e.g. Content Preview)
+          'script-src': ["'self'", "'unsafe-inline'", 'cdn.jsdelivr.net'],
+          'worker-src': ["'self'", 'blob:'], // Allows workers from the same origin and blob URLs
+          'connect-src': ["'self'", 'ws:', 'wss:', 'http://localhost:5173'],
         },
       },
     },

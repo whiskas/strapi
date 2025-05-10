@@ -7,7 +7,7 @@ const buildFilesPlugin = (ctx: BuildContext): Plugin => {
   const CHUNK_ID = '.strapi/client/app.js';
 
   // eslint-disable-next-line no-debugger
-  debugger;
+  // debugger;
   return {
     name: 'strapi/server/build-files',
     apply: 'build',

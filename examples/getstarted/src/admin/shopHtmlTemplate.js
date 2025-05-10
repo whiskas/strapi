@@ -10,8 +10,8 @@ const globalStyles = `
   }
 `;
 
-const ShopDocument = ({ entryPath }) => {
-  console.log('##### ShopDocument entryPath ##### ', entryPath);
+export default ({ entryPath }) => {
+  console.log('##### shopHmtlDocument entryPath ##### ', entryPath);
   return `
     <html lang="en">
       <head>
@@ -23,14 +23,12 @@ const ShopDocument = ({ entryPath }) => {
             ${globalStyles}
         </style>
 
-        <title>Shop Front</title>
+        <title>Shop Html Template</title>
       </head>
       <body>
-        <div id="shop" />
-        ${entryPath ? `<script type="module" src="${entryPath}" />` : null}
+        <div id="shop"></div>
+        ${entryPath ? `<script type="module" src="${entryPath}"></script>` : null}
       </body>
     </html>
   `;
 };
-
-export { ShopDocument };

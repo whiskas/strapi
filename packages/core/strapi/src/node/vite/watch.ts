@@ -40,7 +40,7 @@ const watch = async (ctx: BuildContext): Promise<ViteWatcher> => {
   const finalConfig = await mergeConfigWithUserConfig(config, ctx);
 
   // eslint-disable-next-line no-debugger
-  debugger;
+  // debugger;
 
   const hmrConfig = config.server?.hmr;
 
@@ -52,16 +52,18 @@ const watch = async (ctx: BuildContext): Promise<ViteWatcher> => {
     });
   }
 
+  // eslint-disable-next-line no-debugger
+  // debugger;
+
   ctx.logger.debug('Vite config', finalConfig);
 
   const { createServer } = await import('vite');
 
-  // eslint-disable-next-line no-debugger
-  debugger;
   const vite = await createServer(finalConfig);
 
   const viteMiddlewares: Core.MiddlewareHandler = (koaCtx, next) => {
     return new Promise((resolve, reject) => {
+      // vite.middlewares(koaCtx.req, koaCtx.res, (err: unknown) => {
       vite.middlewares(koaCtx.req, koaCtx.res, (err: unknown) => {
         if (err) {
           reject(err);
@@ -86,7 +88,7 @@ const watch = async (ctx: BuildContext): Promise<ViteWatcher> => {
     const url = koaCtx.originalUrl;
 
     // eslint-disable-next-line no-debugger
-    debugger;
+    // debugger;
     let template = await fs.readFile(path.relative(ctx.cwd, '.strapi/client/index.html'), 'utf-8');
     template = await vite.transformIndexHtml(url, template);
 
@@ -98,6 +100,7 @@ const watch = async (ctx: BuildContext): Promise<ViteWatcher> => {
 
   ctx.strapi.server.router.get(adminRoute, serveAdmin);
   ctx.strapi.server.router.use(adminRoute, viteMiddlewares);
+  ctx.strapi.server.router.use('/shop/:path*', viteMiddlewares);
 
   return {
     async close() {

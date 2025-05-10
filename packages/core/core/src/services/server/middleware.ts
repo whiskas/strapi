@@ -112,6 +112,9 @@ const resolveMiddlewares = (
 const resolveCustomMiddleware = (resolve: string, strapi: Core.Strapi) => {
   let modulePath;
 
+  // eslint-disable-next-line no-debugger
+  // debugger;
+
   try {
     modulePath = require.resolve(resolve);
   } catch (error) {

@@ -249,13 +249,13 @@ describe('var conflict', function () {
   }));
   app.use(function * () {
     if (this.url === '/first') {
-      yield this.render('locals', {
+      yield this.entryServer('locals', {
         title: 'hbs'
       });
       return;
     }
     if (this.url === '/second') {
-      yield this.render('locals', {
+      yield this.entryServer('locals', {
         name: 'hbs'
       });
       return;
